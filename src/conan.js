@@ -1,4 +1,4 @@
-import { initComp } from './skill/skill'
+import { initComp } from './skill/listener/skill'
 import { initArmorRepeater } from './armor/armor'
 import { initTalentRepeater } from './talent/talent'
 import { initWeaponsRepeater, initWeaponCraft } from  './weapons/weapons'

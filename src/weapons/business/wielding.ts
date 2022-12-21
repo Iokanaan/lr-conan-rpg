@@ -1,29 +1,6 @@
-import { LrEvent } from "../EventHandler"
+import { WeaponData, WeaponSizeId, weaponSizesInt, WeaponWielding, WeaponWieldingId, weaponWieldingsInt } from "../types/weaponData"
 
-export type WeaponSizeId = keyof typeof weaponSizesInt;
-
-const weaponSizesInt: Record<string, number> = {
-    uneMain: 1,
-    deuxMains: 2,
-    desequilibree: 3,
-    encombrante: 4,
-    fixe: 5,
-    monstrueuse: 6
-}
-
-export type WeaponWieldingId = keyof typeof weaponWieldingsInt;
-
-interface WeaponWielding {
-    id: WeaponWieldingId
-    type: string
-}
-
-const weaponWieldingsInt: Record<string, number> = {
-    uneMain: 1,
-    deuxMains: 2
-}
-
-export const handleWielding = function(sheet: Sheet, component: Component<string>) {
+export const handleWielding = function(sheet: Sheet<CharacterData>, component: Component<string>) {
     const entryData = sheet.get("weapons").value()[component.index()]
     const entryCmp = sheet.get("weapons").find(component.index())
     // Autoriser le changement passage changement de maniement pour les armes à deux main et les déséquilibrées
@@ -54,7 +31,7 @@ export const handleWeaponChoiceRepeater = function(entryCmp: Component<WeaponDat
     entryCmp.find('wielding_Choice_as_Int').value(weaponWieldingsInt[wielding_Choice])
 }
 
-export const handleWeaponChoiceCraft = function(sheet: Sheet, target: LrEvent<WeaponSizeId>) {
+export const handleWeaponChoiceCraft = function(sheet: Sheet<WeaponData>, target: LrEvent<WeaponSizeId>) {
     let wieldingChoice = "deuxMains"
     if(target.value() === "uneMain" || target.value() === "desequlibree") {
         wieldingChoice = "uneMain"

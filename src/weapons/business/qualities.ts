@@ -1,10 +1,5 @@
-import { EventHandler, LrEvent } from "../../EventHandler"
-
-export interface Quality {
-    id: WeaponQualityId
-    name: string
-    type: string
-}
+import { intToLetter } from "../../util/utils"
+import { Quality, WeaponData, WeaponQualityId, WeaponQualityInputName } from "../types/weaponData"
 
 // Variable globale qui liste les qualités variables
 export const variableQualities = function() {
@@ -18,7 +13,7 @@ export const variableQualities = function() {
 }()
 
 export const getLabel = function(s: WeaponQualityId) {
-    return s + "_Input" as WeaponQualityInputLabel
+    return s + "_Input" as WeaponQualityInputName
 }
 
 // Formatage des qualités avec leur valeur numérique
@@ -35,27 +30,20 @@ export const processQualitiesLabel = function(data: WeaponData) {
     })
 }
 
-export const qualityInputHandler: EventHandler = function(sheet: Sheet) {
-    return function() {
-        sheet.setData({qualities_Input : processQualitiesLabel(sheet.getData()).join(", ")})
-    }
+export const handleQualityInput = function(sheet: Sheet<WeaponData>) {
+    sheet.setData({qualities_Input : processQualitiesLabel(sheet.getData()).join(", ")})
 }
 
-// Hide / Show inputs for variable qualities in craft
-const setQualityInputs = function(sheet: Sheet, selectedQualities: string[]) {
+export const handleCraftQualityChoice = function(sheet: Sheet<WeaponData>, choices: LrEvent<string[]>) {
     variableQualities.forEach(function(quality) { 
-        if(selectedQualities.includes(quality.id)) {
+        if(choices.value().includes(quality.id)) {
             sheet.get(quality.id + "_Label").show()
-            sheet.get(quality.id + "_Input").show()
+            sheet.get(getLabel(quality.id)).show()
         } else {
             sheet.get(quality.id + "_Label").hide()
-            sheet.get(quality.id + "_Input").hide()
+            sheet.get(getLabel(quality.id)).hide()
         }
     })
-}
-
-export const handleCraftQualityChoice = function(sheet: Sheet, choices: LrEvent<string[]>) {
-    setQualityInputs(sheet, choices.value()) 
     sheet.setData({qualities_Input : processQualitiesLabel(sheet.getData()).join(", ")})
     if(choices.value().includes("JET")) {
         sheet.setData({throwable_as_Int: 1})
@@ -79,14 +67,28 @@ export const setRepeaterQualityInputs = function(component: Component, selectedQ
     variableQualities.forEach(function(quality) { 
         if(selectedQualities.includes(quality.id)) {
             component.find(quality.id + "_Label").show()
-            component.find(quality.id + "_Input").show()
+            component.find(getLabel(quality.id)).show()
         } else {
             component.find(quality.id + "_Label").hide()
-            component.find(quality.id + "_Input").hide()
+            component.find(getLabel(quality.id)).hide()
         }
     })
 }
 
 export const handleRepeaterQualityInput = function(entryCmp: Component<WeaponData>) { 
     entryCmp.find('qualities_Input').value(processQualitiesLabel(entryCmp.value()).join(", "))
+}
+
+export const processQualitiesTag = function(data: WeaponData) {
+    return data.qualities_Choice.map(function(selectedQuality) {
+        const quality = Tables.get("weapon_qualities").get(selectedQuality) as Quality
+        if(quality.type === "Variable") {
+            if(data[getLabel(quality.id)] === undefined) {
+                data[getLabel(quality.id)] = 1
+            }
+            // Sale, les tags ne peuvent pas contenir de chiffre, on doit compter avec des lettres
+            return "q_" + quality.id.replace( "_X", "_" + intToLetter(data[getLabel(quality.id)] ?? 1))
+        }
+        return "q_" + quality.id
+    })
 }

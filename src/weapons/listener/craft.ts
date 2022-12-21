@@ -1,7 +1,9 @@
-import { LrEvent } from "../../EventHandler"
-import { handleWeaponChoiceCraft, WeaponSizeId } from "../controller/wielding"
+import { setCharges } from "../business/charges"
+import { handleQualityInput, variableQualities } from "../business/qualities"
+import { handleWeaponChoiceCraft } from "../business/wielding"
+import { WeaponData, WeaponSizeId, weaponSizesInt, weaponTypesInt, weaponWieldingsInt } from "../types/weaponData"
 
-export const initWeaponCraft = function(sheet: Sheet) {
+export const initWeaponCraft = function(sheet: Sheet<WeaponData>) {
     // Initialiser les champs
     if(sheet.getData().qualities_Choice === undefined) {
         sheet.setData({
@@ -28,11 +30,11 @@ export const initWeaponCraft = function(sheet: Sheet) {
     }
 
     // Afficher les valeurs de qualités nécessaires et mettre à jour la liste des qualités à l'update sur les checkbox
-    sheet.get("qualities_Choice").on("update", qualityChoiceHandler(sheet))
+    sheet.get("qualities_Choice").on("update", function() { handleQualityInput(sheet) })
 
-    // Update la iste des qualités à l'update des valeurs sur les qualités
+    // Update la liste des qualités à l'update des valeurs sur les qualités
     variableQualities.forEach(function(quality) {
-        sheet.get(quality.id + "_Input").on('update', qualityInputHandler(sheet))
+        sheet.get(quality.id + "_Input").on('update', function() { handleQualityInput(sheet) })
     })
     // Toggle l'affichage des munitions
     sheet.get("type_Choice").on("update", function(event){ setCharges(sheet, event.value())})

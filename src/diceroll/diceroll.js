@@ -1,49 +1,4 @@
 /**
- * 
- * @param {Sheet} sheet 
- * @param {*} skill 
- * @param {string[]} tags 
- */
-export const rollComp = function(sheet, skill, tags) {
-    each(sheet.get("talents").value(), function(talent) {
-        tags.push("t_" + talent.talents_Choice)
-    })
-    tags.push("s_" + skill.id)
-    const compvalue = sheet.get(skill.id + "_Exp_Inpt").value() + sheet.get(skill.attribute + "_Inpt").value()
-    const concValue = sheet.get(skill.id + "_Conc_Inpt").value()
-    const crits = []
-    // Faire compter les critiques double sur la base de la concentration
-    if(concValue > 0) {
-        for(let i = 1; i <= concValue; i++) {
-            crits.push(i + ":2")
-        }
-    } 
-    
-    // Ajouter un tag au lancer si on a 0 dans la compétence
-    if(sheet.get(skill.id + "_Exp_Inpt").value() + concValue === 0) {
-        tags.push("noskill")
-    }
-
-    // Prendre l'intensité définie sur la feuille (par défaut 2)
-    let intensity = (sheet.getData().roll_intensity !== undefined) ? sheet.getData().roll_intensity : "2"
-    const voleeTag = tags.filter(function(e) { return /v_*/g.test(e) })[0]
-    if(voleeTag !== undefined) {
-        intensity =  parseInt(intensity) + parseInt(voleeTag.split("_")[1])
-    }
-
-    // Construction de l'expression
-    let diceExpression = intensity + "d20 <="
-    diceExpression += (crits.length !== 0) ? "{" + crits.join() + "} " : " "
-    diceExpression += compvalue
-    diceExpression += (tags.length !== 0) ? "[" + tags.join() + "]" : ""
-    const roll = new RollBuilder(sheet)
-    roll.expression(diceExpression)
-        .visibility("visible")
-        .title(skill.name)
-    roll.roll();
-}
-
-/**
  * Code des tags
  * s = skill
  * d = damage

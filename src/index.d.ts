@@ -1,41 +1,21 @@
 //@ts-check
 
-import { LrEvent } from "./EventHandler";
-import { WeaponSizeId } from "./weapons/weaponSize";
-import { WeaponWieldingId } from "./weapons/wielding"
+import { AttributeInputName, SkillConcInputName, SkillData, SkillExpInputName } from "./skill/types/skillData";
+import { WeaponSizeId, WeaponWieldingId, WeaponData } from "./weapon/types/weaponData";
 
 declare global { 
-    type LrId = WeaponQualityId | WeaponTypeId | WeaponSizeId | WeaponWieldingId
-    type WeaponTypeId = 'melee' | 'ranged';
-    type WeaponQualityId = 'AVE' | 'BOU_X' | 'JET';
-
+    
     declare const each: <T>(c: Record<string, T>, f: (i: T, eid: string) => void) => vois;
 
     declare const Tables: Table;
         interface Table {
+        get(elem: 'skills'): LrObject<Skill>
         get(id:string): LrObject
     }
 
-    interface LrObject {
-        each(f:(a: any) => void);
-        get<T>(s:string): T;
-    }
-
-    type QualityInputName = string
-
-    type WeaponQualityInputLabel =  `${WeaponQualityId}_Input`
-
-    type WeaponQualityInputData = {
-        [K in WeaponQualityInputLabel]?: number
-    }
-
-    type WeaponData = WeaponQualityInputData & {
-        type_Choice_as_Int: number
-        throwable_as_Int: number
-        qualities_Input: string
-        qualities_Choice: WeaponQualityId[]
-        type_Choice: WeaponTypeId
-        size_Choice: WeaponSizeId
+    interface LrObject<T> {
+        each(f:(a: T) => void);
+        get(s: string): T;
     }
 
     type YesNoData = {
@@ -46,12 +26,15 @@ declare global {
         talents_Choice: string
     }
 
+    interface LrEvent<T> {
+        value(): T
+    }
+    
     interface Component<T = unkown > {
         show():void
         hide(): void
         value():T,
         value(val: T): void
-        find(elem: 'talents'): Component<TalentData>,
         find(elem: string): Component,
         on(type: string, handler: (event: LrEvent) => void)
         on(type: string, delegate: string, handler: (event: LrEvent) => void)
@@ -62,12 +45,32 @@ declare global {
         setChoices(data: Record<string, string>)
     }
 
-    interface Sheet {
-        get(elem: 'talents'): Record<string, T>,
-        get(s:string):Component;
-        setData(data: Partial<Data>)
-        getData(): Data;
+    interface Sheet<T> {
+        get(elem: 'weapons'): Component<Record<string, WeaponData>>,
+        get(elem: 'talents'): Component<Record<string, TalentData>>,
+        get(elem: AttributeInputName | SkillConcInputName | SkillExpInputName): Component<number>
+        get(s:string): Component;
+        setData(data: Partial<T>)
+        getData(): T;
         prompt(title: string, sheetId: string, callback: (result: componentData) => void, callbackInit: (sheet: Sheet) => void)
     }
+
+    type Visibility = 'visible'
+
+    interface IRollBuilder {
+        new(sheet: Sheet): RollBuilder
+        expression(exp: string)
+        visibility(visibility: Visibility)
+        title(title: string)
+        roll()
+    }
+
+    type CharData = SkillData & Record<string, WeaponData> & { roll_intensity: '1' | '2' | '3' | '4' | '5' }
+
+    type DiceResult = {
+        allTags: string[]
+    }
+
+    type DiceResultCallback = (e: string, callback: (sheet: Sheet) => void) => void;
 } 
 export {}

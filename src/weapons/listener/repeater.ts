@@ -1,15 +1,16 @@
 // Initalisation d'une entry du repeater des armes
-import { setRepeaterQualityInputs, variableQualities, handleRepeaterQualityChoice, getLabel, Quality } from './qualities'
-import { handleChargeMoins, handleChargePlus, setRepeaterCharges } from './charges'
-import { LrEvent } from '../EventHandler'
-import { handleWielding, handleWeaponChoiceRepeater, WeaponSizeId } from './wielding'
-import { rollComp } from "../diceroll/diceroll"
+import { setRepeaterQualityInputs, variableQualities, handleRepeaterQualityChoice, getLabel, processQualitiesTag } from '../business/qualities'
+import { handleChargeMoins, handleChargePlus, setRepeaterCharges } from '../business/charges'
+import { handleWielding, handleWeaponChoiceRepeater } from '../business/wielding'
+import { Quality, WeaponData, WeaponQualityId, WeaponSizeId, WeaponTypeId } from '../types/weaponData'
+import { intToLetter } from '../../util/utils'
+import { handleAttack, handleThrow } from '../business/attack'
 
 // Variable globale de gestion des entries sur le repeater des armes
 let globalWeaponEntryStates: Record<string, 'EDIT' | 'VIEW'> = {}
 
 // Initialisation du repeater des armes
-export const initWeaponsRepeater = function(sheet: Sheet) {
+export const initWeaponsRepeater = function(sheet: Sheet<CharData>) {
 
     // Gestion de l'initialisation du mode édition
     sheet.get("weapons").on("click", function(repeater: Component<Record<string, WeaponData>>) {
@@ -46,17 +47,12 @@ export const initWeaponsRepeater = function(sheet: Sheet) {
 
     // Lancer une attaque si click sur l'arme
     sheet.get("weapons").on("click", "weaponName", function(component: Component<string[]>) {
-       
+        handleAttack(sheet, component)
     })
 
     // Gestion du jet d'armes de corps à corps
-    sheet.get("weapons").on("click", "throw", function(component) {
-        const entryData = sheet.get("weapons").value()[component.index()]
-        entryData.damage_Input = (entryData.damage_Input !== undefined) ? entryData.damage_Input : 0 
-        const tags = processQualitiesTag(entryData)
-        tags.push("attack")
-        tags.push("d_" + intToLetter(entryData.damage_Input))
-        rollComp(sheet, Tables.get("skills").get("DIST"), tags)
+    sheet.get("weapons").on("click", "throw", function(component: Component) {
+        handleThrow(sheet, component)
     })
 }
 
@@ -71,7 +67,7 @@ const initRepeaterEditWeapon = function(entryCmp: Component<WeaponData>) {
     // Afficher les valeurs de qualités nécessaires et mettre à jour la liste des qualités à l'update sur les checkbox
     entryCmp.find("qualities_Choice").on("update", function(target: LrEvent<WeaponQualityId[]>) { handleRepeaterQualityChoice(entryCmp, target) })
     // Update la iste des qualités à l'update des valeurs sur les qualités
-    variableQualities.forEach(function(quality) {
+    variableQualities.forEach(function(quality: Quality) {
         entryCmp.find(getLabel(quality.id)).on('update', function(target: LrEvent<WeaponQualityId[]>) { handleRepeaterQualityChoice(entryCmp, target) })
     })
     // Toggle l'affichage des munitions
@@ -83,26 +79,4 @@ const initRepeaterEditWeapon = function(entryCmp: Component<WeaponData>) {
     entryCmp.find("size_Choice").on("update", function(target: LrEvent<WeaponSizeId>) {
         handleWeaponChoiceRepeater(entryCmp, target)
     })
-}
-
-const processQualitiesTag = function(data: WeaponData) {
-    return data.qualities_Choice.map(function(selectedQuality) {
-        const quality = Tables.get("weapon_qualities").get(selectedQuality) as Quality
-        if(quality.type === "Variable") {
-            if(data[getLabel(quality.id)] === undefined) {
-                data[getLabel(quality.id)] = 1
-            }
-            // Sale, les tags ne peuvent pas contenir de chiffre, on doit compter avec des lettres
-            return "q_" + quality.id.replace( "_X", "_" + intToLetter(data[getLabel(quality.id)] ?? 1))
-        }
-        return "q_" + quality.id
-    })
-}
-
-const letterToInt = function(letter: string) {
-    return letter.charCodeAt(0) - 96
-}
-
-const intToLetter = function(n: number) {
-    return String.fromCharCode(96 + n)
 }
