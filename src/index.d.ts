@@ -39,6 +39,8 @@ declare global {
         on(type: string, handler: (event: LrEvent) => void)
         on(type: string, delegate: string, handler: (event: LrEvent) => void)
         index(): string
+        removeClass(cl: string)
+        text(txt: string)
     }
 
     interface ChoiceComponent<T = unknown> extends Component<T> {
@@ -46,6 +48,7 @@ declare global {
     }
 
     interface Sheet<T> {
+        id(): string
         get(elem: 'weapons'): Component<Record<string, WeaponData>>,
         get(elem: 'talents'): Component<Record<string, TalentData>>,
         get(elem: AttributeInputName | SkillConcInputName | SkillExpInputName): Component<number>
@@ -69,8 +72,33 @@ declare global {
 
     type DiceResult = {
         allTags: string[]
+        all: DiceResult[]
+        containsTag(tag: string): boolean
+        success: number
+        value: number
+        title: string
+        expression: string
     }
 
-    type DiceResultCallback = (e: string, callback: (sheet: Sheet) => void) => void;
+    type DiceResultCallback = (e: string, callback: (sheet: Sheet<DiceResultData>) => void) => void;
+
+    type DiceResultData = {
+
+    }
+
+    class DamageMetadata {
+        constructor(result: DiceResult) {
+            this.damage = result.success
+            this.nbEffects = result.all.filter(function(roll) { return roll.value === 5 || roll.value === 6 }).length
+        }
+        damage: number
+        selfDamage: number = 0
+        mentalDamage: number = 0
+        wounds: number = 0
+        nbLocalisation: number = 1
+        effects: string[] = []
+        badEffects: string[] = []
+        readonly nbEffects: number
+    }
 } 
 export {}

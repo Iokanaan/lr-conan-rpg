@@ -1,5 +1,5 @@
 export type AttributeId = 'CON' | 'VOL'
-export type SkillId = 'COO' | 'PERS'
+export type SkillId = 'COO' | 'PERS' | 'ACR' | 'ALC' | 'DIST' | 'GUE'
 export type SkillExpInputName = `${SkillId}_Exp_Inpt`
 export type SkillConcInputName = `${SkillId}_Conc_Inpt`
 export type AttributeInputName = `${AttributeId}_Inpt`

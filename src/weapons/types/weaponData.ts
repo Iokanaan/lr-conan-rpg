@@ -22,7 +22,8 @@ export const weaponTypesInt: Record<string, number> = {
 }
 
 // Weapon Qualities
-export type WeaponQualityId = 'AVE' | 'BOU_X' | 'JET';
+export type WeaponQualityId = 'AVE' | 'BOU' | 'JET' | 'CRU' | 'CAV' | 'PERF' | 'CON' | 'ETEN' | 'CACH' | 'ETOU' 
+| 'ETRE' | 'FRA' | 'IMP' | 'INC' | 'INT' | 'LET' | 'MAT' | 'NLET' | 'PAR' | 'PERS' | 'RED' | 'SUB' | 'VOL' | 'ZON';
 export type WeaponQualityInputName = `${WeaponQualityId}_Input`
 export interface Quality {
     id: WeaponQualityId

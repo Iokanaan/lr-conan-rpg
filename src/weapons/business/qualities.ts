@@ -87,7 +87,7 @@ export const processQualitiesTag = function(data: WeaponData) {
                 data[getLabel(quality.id)] = 1
             }
             // Sale, les tags ne peuvent pas contenir de chiffre, on doit compter avec des lettres
-            return "q_" + quality.id.replace( "_X", "_" + intToLetter(data[getLabel(quality.id)] ?? 1))
+            return "q_" + quality.id + "_" + intToLetter(data[getLabel(quality.id)] !== undefined ? data[getLabel(quality.id)] as number : 1)
         }
         return "q_" + quality.id
     })
