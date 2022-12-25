@@ -1,22 +1,21 @@
 {
-  "name": "vite-project",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
+  "name": "letsroleenhanced",
+  "version": "7.0.0",
+  "main": "src/lre.ts",
+  "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.20.5",
-    "@babel/preset-env": "^7.20.2",
-    "@babel/runtime": "^7.20.6",
-    "core-js": "^3.26.1",
-    "typescript": "^4.9.4",
-    "vite": "^4.0.0"
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.226",
+    "@types/node": "^18.7.14",
+    "colors": "^1.4.0",
+    "diff": "^5.1.0",
+    "esbuild": "^0.15.3",
+    "eslint": "^8.23.0",
+    "json-colorizer": "^2.2.2",
+    "tsx": "^3.9.0"
   },
-  "dependencies": {
-    "@vitejs/plugin-legacy": "^3.0.1"
+  "scripts": {
+    "test": "npx tsx test.ts",
+    "build": "npx tsx build.ts"
   }
 }

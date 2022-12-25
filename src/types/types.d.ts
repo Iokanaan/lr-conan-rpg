@@ -1,7 +1,6 @@
 //@ts-check
 
 import { AttributeInputName, SkillConcInputName, SkillData, SkillExpInputName } from "./skill/types/skillData";
-import { WeaponSizeId, WeaponWieldingId, WeaponData } from "./weapon/types/weaponData";
 
 declare global { 
     

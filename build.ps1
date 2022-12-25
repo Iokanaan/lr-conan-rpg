@@ -1,1 +1,0 @@
-npm run build;  Get-Content .\dist\assets\index-*.js | %{ $_.Replace("void 0", "undefined") } | Set-Content .\dist\index.js

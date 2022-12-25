@@ -1,10 +1,10 @@
 // Initalisation d'une entry du repeater des armes
 import { setRepeaterQualityInputs, variableQualities, handleRepeaterQualityChoice, getLabel, processQualitiesTag } from '../business/qualities'
 import { handleChargeMoins, handleChargePlus, setRepeaterCharges } from '../business/charges'
-import { handleWielding, handleWeaponChoiceRepeater } from '../business/wielding'
 import { Quality, WeaponData, WeaponQualityId, WeaponSizeId, WeaponTypeId } from '../types/weaponData'
-import { intToLetter } from '../../util/utils'
+import { handleWeaponChoiceRepeater, handleWielding } from '../business/wielding'
 import { handleAttack, handleThrow } from '../business/attack'
+
 
 // Variable globale de gestion des entries sur le repeater des armes
 let globalWeaponEntryStates: Record<string, 'EDIT' | 'VIEW'> = {}
