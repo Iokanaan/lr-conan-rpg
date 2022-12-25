@@ -33,7 +33,7 @@ const transformForLR: Options = {
 
 const noVoid0Plugin: Options = {
   ...transformForLR,
- // plugin: plugins([noVoid0(), keepInstanceOf()]),
+  plugin: plugins([noVoid0(), keepInstanceOf()]),
 };
 
 export { transformForLR, noVoid0Plugin };
