@@ -10,6 +10,7 @@ declare global {
     declare const Tables: Table;
         interface Table {
         get(elem: 'skills'): LrObject<Skill>
+        get(elem: 'talents'): LrObject<Talent>
         get(id:string): LrObject
     }
 
@@ -80,25 +81,7 @@ declare global {
         expression: string
     }
 
-    type DiceResultCallback = (e: string, callback: (sheet: Sheet<DiceResultData>) => void) => void;
+    type DiceResultCallback = (e: string, callback: (sheet: Sheet<unknown>) => void) => void;
 
-    type DiceResultData = {
-
-    }
-
-    class DamageMetadata {
-        constructor(result: DiceResult) {
-            this.damage = result.success
-            this.nbEffects = result.all.filter(function(roll) { return roll.value === 5 || roll.value === 6 }).length
-        }
-        damage: number
-        selfDamage: number = 0
-        mentalDamage: number = 0
-        wounds: number = 0
-        nbLocalisation: number = 1
-        effects: string[] = []
-        badEffects: string[] = []
-        readonly nbEffects: number
-    }
 } 
 export {}

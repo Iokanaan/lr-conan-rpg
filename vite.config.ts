@@ -1,6 +1,11 @@
 import { defineConfig } from "vite";
-//import babel from '@rollup/plugin-babel';
+import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
   build: { minify: false, modulePreload: { polyfill: false }/*, rollupOptions: {plugins: [babel({preset})]}*/ },
+  plugins: [
+    legacy({
+      targets: ['defaults', 'not IE 11'],
+    }),
+  ],
 });

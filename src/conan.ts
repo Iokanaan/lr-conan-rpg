@@ -3,7 +3,8 @@ import { initArmorRepeater } from './armor/armor'
 import { initTalentRepeater } from './talent/talent'
 import { initWeaponsRepeater } from './weapons/listener/repeater'
 import { initWeaponCraft } from './weapons/listener/craft'
-import { roll } from './diceroll/diceroll'
+import { rollResultHandler } from './diceroll/business/roll'
+
 
 // @ts-ignore
 init = function(sheet: Sheet<any>) {
@@ -26,4 +27,4 @@ drop = function(from: Sheet<any>, to: Sheet<any>) {
 }
 
 // @ts-ignore
-initRoll = roll
+initRoll = rollResultHandler
