@@ -26,7 +26,7 @@ esbuild
     minify: false,
     platform: "neutral",
     outfile: "build/lre.tmp.js",
-    // plugins: [swcPlugin],
+    plugins: [swcPlugin],
     format: "iife",
     define: {
       "console.log": "log",

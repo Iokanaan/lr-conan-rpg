@@ -4,8 +4,8 @@
   "main": "src/lre.ts",
   "license": "MIT",
   "devDependencies": {
-    "@swc/cli": "^0.1.57",
-    "@swc/core": "^1.2.226",
+    "@swc/cli": "^0.1.59",
+    "@swc/core": "^1.3.24",
     "@types/node": "^18.7.14",
     "colors": "^1.4.0",
     "diff": "^5.1.0",
