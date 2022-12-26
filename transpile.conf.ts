@@ -19,22 +19,9 @@ const transformForLR: Options = {
   isModule: true,
   module: {
     type: "es6",
-    // strict: false,
-    // strictMode: false,
-    // lazy: false,
-    // noInterop: false,
-    // ignoreDynamic: false,
   },
-  //plugin: plugins([defaultVisitor()]),
-  //plugin: plugins([defaultVisitor(), classToFunction()]),
-  plugin: plugins([noArraySpreading(), classExtend(), classToFunction()]),
+  plugin: plugins([noArraySpreading(), classExtend(), classToFunction(), noVoid0(), keepInstanceOf()]),
   sourceMaps: false,
 };
 
-const noVoid0Plugin: Options = {
-  ...transformForLR,
-  plugin: plugins([noVoid0(), keepInstanceOf()]),
-};
-
-export { transformForLR, noVoid0Plugin };
-//, noVoid0Plugin};
+export { transformForLR };

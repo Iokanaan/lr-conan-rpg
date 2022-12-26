@@ -6,9 +6,9 @@ import { DamageDiceResultWrapper } from "../wrapper/damageDiceResultWrapper"
 import { DiceResultWrapper } from "../wrapper/diceResultWrapper"
 
 
-export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: string[]) {
+export const rollSkill = function (sheet: Sheet<CharData>, skill: Skill, tags: string[]) {
     console.log("ll")
     // commenter pour faire fonctionner
-    const a  = ""
-   
+    const a = ""
+
 }
