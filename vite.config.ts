@@ -1,11 +1,17 @@
 import { defineConfig } from "vite";
-import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
-  build: { minify: false, modulePreload: { polyfill: false }/*, rollupOptions: {plugins: [babel({preset})]}*/ },
-  plugins: [
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-    }),
-  ],
+  build: { 
+    minify: false, 
+    modulePreload: { 
+      polyfill: false 
+    },
+    lib: {
+      // Could also be a dictionary or array of multiple entry points
+      entry: './src/conan.ts',
+      name: 'MyLib',
+      // the proper extensions will be added
+      fileName: 'my-lib',
+    }
+  }
 });

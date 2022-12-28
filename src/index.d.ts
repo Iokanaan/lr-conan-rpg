@@ -5,7 +5,7 @@ import { WeaponSizeId, WeaponWieldingId, WeaponData } from "./weapon/types/weapo
 
 declare global { 
     
-    declare const each: <T>(c: Record<string, T>, f: (i: T, eid: string) => void) => vois;
+    declare const each: <T>(c: Record<string, T>, f: (i: T, eid: string) => void) => void;
 
     declare const Tables: Table;
         interface Table {

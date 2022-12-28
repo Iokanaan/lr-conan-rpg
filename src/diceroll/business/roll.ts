@@ -2,8 +2,9 @@
 import { getAttrInputName, getConcInputName, getExpInputName } from "../../skill/listener/skill"
 import { Skill } from "../../skill/types/skillData"
 import { DamageDiceResultPopup } from "../prompt/damageDiceResultPopup"
+import { DiceResultPopup } from "../prompt/diceResultPopup"
 import { DamageDiceResultWrapper } from "../wrapper/damageDiceResultWrapper"
-import { DiceResultWrapper, DiceResultWrapper } from "../wrapper/diceResultWrapper"
+import { DiceResultWrapper } from "../wrapper/diceResultWrapper"
 
 
 export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: string[]) {
@@ -27,7 +28,7 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     if(sheet.get(getExpInputName(skill.id)).value() + concValue === 0) {
         tags.push("noskill")
     }
-
+    log("ajout du tag noskill")
     // Prendre l'intensité définie sur la feuille (par défaut 2)
     let intensity = (sheet.getData().roll_intensity !== undefined) ? parseInt(sheet.getData().roll_intensity) : 2
     const voleeTag = tags.filter(function(e) { return /v_*/g.test(e) })[0]
@@ -44,6 +45,7 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     roll.expression(diceExpression)
         .visibility("visible")
         .title(skill.name)
+    log("roll")
     roll.roll();
 }
 
@@ -60,7 +62,12 @@ export const rollResultHandler = function(result: DiceResult, callback: DiceResu
         if(result.allTags.includes('damage')) {
             new DamageDiceResultPopup(sheet).render(new DamageDiceResultWrapper(result))
         } else {
-            new DiceResultWrapper(result)
+            log("render roll")
+            const popup = new DiceResultPopup(sheet)
+            log(result.allTags)
+            const aa = new DiceResultWrapper(result)
+            log(aa.rawResult)
+            popup.render(aa)
         }
     })
 }
