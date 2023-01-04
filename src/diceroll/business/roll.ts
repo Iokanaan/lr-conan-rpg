@@ -1,6 +1,6 @@
 
 import { getAttrInputName, getConcInputName, getExpInputName } from "../../skill/listener/skill"
-import { Skill } from "../../skill/types/skillData"
+import { Skill } from "../../skill/types/skillTypes"
 import { DamageDiceResultPopup } from "../prompt/damageDiceResultPopup"
 import { DiceResultPopup } from "../prompt/diceResultPopup"
 import { DamageDiceResultWrapper } from "../wrapper/damageDiceResultWrapper"
@@ -26,7 +26,7 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     
     // Ajouter un tag au lancer si on a 0 dans la compétence
     if(sheet.get(getExpInputName(skill.id)).value() + concValue === 0) {
-        tags.push("noskill")
+        tags.push("ns")
     }
     log("ajout du tag noskill")
     // Prendre l'intensité définie sur la feuille (par défaut 2)
@@ -59,15 +59,14 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
  */
 export const rollResultHandler = function(result: DiceResult, callback: DiceResultCallback) {
     callback('diceResult', function(sheet) {
-        if(result.allTags.includes('damage')) {
-            new DamageDiceResultPopup(sheet).render(new DamageDiceResultWrapper(result))
+        if(result.allTags.includes('dm')) {
+            DamageDiceResultPopup
+                .call(sheet)
+                .render(DamageDiceResultWrapper.call({}, result));
         } else {
-            log("render roll")
-            const popup = new DiceResultPopup(sheet)
-            log(result.allTags)
-            const aa = new DiceResultWrapper(result)
-            log(aa.rawResult)
-            popup.render(aa)
+            DiceResultPopup
+                .call(sheet)
+                .render(DiceResultWrapper.call({}, result));
         }
     })
 }

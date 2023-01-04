@@ -1,7 +1,7 @@
 import { rollSkill } from "../../diceroll/business/roll"
-import { AttributeId, AttributeInputName, SkillConcInputName, SkillExpInputName, SkillId } from '../types/skillData'
+import { AttributeId, AttributeInputName, SkillConcInputName, SkillExpInputName, SkillId } from '../types/skillTypes'
 
-export const initSkill = function(sheet: Sheet<CharData>) {
+export const setSkillListeners = function(sheet: Sheet<CharData>) {
     Tables.get('skills').each(function(skill) {
         sheet.get(skill.id + '_btn').on('click', function() {
             rollSkill(sheet, skill, [])

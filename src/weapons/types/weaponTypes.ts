@@ -10,13 +10,15 @@ export type WeaponData = WeaponQualityInputData & {
     wielding_Choice: WeaponWieldingId
     wielding_Choice_as_Int: number
     range_Choice: WeaponRangeId
+    charges_Input: number,
+    damage_Input: number
 };
 
 export type WeaponRangeId = '1' | '2' | '3' | '4' | '5' | 'C' | 'M' | 'L';
 
 // Weapon types
-export type WeaponTypeId = keyof typeof weaponTypesInt;
-export const weaponTypesInt: Record<string, number> = {
+export type WeaponTypeId = 'melee' | 'ranged'
+export const weaponTypesInt: Record<WeaponTypeId, number> = {
     melee: 1,
     ranged: 2
 }
@@ -46,12 +48,12 @@ export const weaponSizesInt: Record<string, number> = {
 }
 
 // Weapon Wieldings
-export type WeaponWieldingId = keyof typeof weaponWieldingsInt;
+export type WeaponWieldingId = 'uneMain' | 'deuxMains';
 export type WeaponWielding = {
     id: WeaponWieldingId
     type: string
 }
-export const weaponWieldingsInt: Record<string, number> = {
+export const weaponWieldingsInt: Record<WeaponWieldingId, number> = {
     uneMain: 1,
     deuxMains: 2
 }

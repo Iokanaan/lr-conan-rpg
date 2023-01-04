@@ -24,22 +24,7 @@ export const initArmorRepeater = function(sheet) {
 
 const initRepeaterEditArmor = function(entryCmp) {
 
-    if(entryCmp.find('type_Choice_as_Int').value()) {}
-
-    // Afficher les valeurs de qualités nécessaires et mettre à jour la liste des qualités à l'update sur les checkbox
-    entryCmp.find("qualities_Choice").on("update", function(target) {
-        entryCmp.find('qualities_Inpt').value(processQualitiesLabel(entryCmp.value()).join(", "))
-    })
-
-    entryCmp.find("coverage_Choice").on("update", function(target) {
-        entryCmp.find('coverage_Inpt').value(processQualitiesLabel(entryCmp.value()).join(", "))
-    })
-
-    // Toggle l'affichage des munitions
-    entryCmp.find("type_Choice").on("update", function(target) {
-       entryCmp.find('type_Choice_as_Int').value(armorTypeInt[target.value()])
-    })
-
+   
 }
 
 // Hide / Show inputs for variable qualities in repeater

@@ -1,4 +1,4 @@
-import { WeaponData } from "../types/weaponData"
+import { WeaponData } from "../types/weaponTypes"
 import { WeaponEditComponent } from "./weaponEditComponent"
 import { WeaponViewComponent } from "./weaponViewComponent"
 

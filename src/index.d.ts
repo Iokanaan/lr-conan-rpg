@@ -1,17 +1,34 @@
 //@ts-check
 
-import { AttributeInputName, SkillConcInputName, SkillData, SkillExpInputName } from "./skill/types/skillData";
+import { AttributeInputName, SkillConcInputName, SkillData, SkillExpInputName } from "./skill/types/skillTypes";
 import { WeaponSizeId, WeaponWieldingId, WeaponData } from "./weapon/types/weaponData";
 
 declare global { 
+
+    declare class RollBuilder {
+        constructor(sheet: Sheet<any>)
+        expression: (s: string) => RollBuilder
+        visibility: (s: string) => RollBuilder
+        title: (s: string) => RollBuilder
+        roll: () => void
+    }
+
+    declare class Dice {
+        static create: (s: string) => Dice
+        tag: (s: string) => Dice
+        static roll: (sheet: Sheet<any>, d: Dice, s: string) => void
+
+    }
     
+    declare const log: (s: any) => void;
+
     declare const each: <T>(c: Record<string, T>, f: (i: T, eid: string) => void) => void;
 
     declare const Tables: Table;
         interface Table {
         get(elem: 'skills'): LrObject<Skill>
         get(elem: 'talents'): LrObject<Talent>
-        get(id:string): LrObject
+        get(id: string): LrObject
     }
 
     interface LrObject<T> {
@@ -24,7 +41,7 @@ declare global {
     }
 
     type TalentData = {
-        talents_Choice: string
+        talents_Choice: TalentId
     }
 
     interface LrEvent<T> {
@@ -42,6 +59,7 @@ declare global {
         index(): string
         removeClass(cl: string)
         text(txt: string)
+        sheet(): Sheet<unknown>
     }
 
     interface ChoiceComponent<T = unknown> extends Component<T> {
@@ -61,15 +79,7 @@ declare global {
 
     type Visibility = 'visible'
 
-    interface IRollBuilder {
-        new(sheet: Sheet): RollBuilder
-        expression(exp: string)
-        visibility(visibility: Visibility)
-        title(title: string)
-        roll()
-    }
-
-    type CharData = SkillData & Record<string, WeaponData> & { roll_intensity: '1' | '2' | '3' | '4' | '5' }
+    type CharData = SkillData & Record<string, TalentData> & Record<string, WeaponData> & { roll_intensity: '1' | '2' | '3' | '4' | '5' }
 
     type DiceResult = {
         allTags: string[]
@@ -83,5 +93,8 @@ declare global {
 
     type DiceResultCallback = (e: string, callback: (sheet: Sheet<unknown>) => void) => void;
 
+    type RepeaterState = 'EDIT' | 'VIEW'
+
 } 
+
 export {}

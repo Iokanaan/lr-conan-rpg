@@ -1,6 +1,7 @@
-import { letterToInt } from "../../util/utils"
-import { WeaponQualityId } from "../../weapons/types/weaponData"
-import { DiceResultWrapper } from "./diceResultWrapper"
+import { TalentId } from "../../talents/types/talentTypes"
+import { charToInt } from "../../util/utils"
+import { WeaponQualityId } from "../../weapons/types/weaponTypes"
+import { DiceResultWrapper, TagCategory } from "./diceResultWrapper"
 
 export interface DamageDiceResultWrapper extends DiceResultWrapper {
     selfDamage: number
@@ -11,14 +12,16 @@ export interface DamageDiceResultWrapper extends DiceResultWrapper {
     effects: string[]
     badEffects: string[]
     nbEffects: number
-    qualityEffects: Record<WeaponQualityId, (damageMetadata: DamageDiceResultWrapper, level: number) => void>
-    getEffects: () => string[]
-    getBadEffects: () => string[]
+    qualityActions: Record<WeaponQualityId, (level: number) => void>
+    allEffects: string[]
+    allBadEffects: string[]
 }
 
 export const DamageDiceResultWrapper = function(this: DamageDiceResultWrapper, result: DiceResult) {
     // Super
     DiceResultWrapper.call(this, result) 
+    log(this.success)
+    log("super donne")
     // Default values
     this.selfDamage = 0
     this.mentalDamage = 0
@@ -27,170 +30,126 @@ export const DamageDiceResultWrapper = function(this: DamageDiceResultWrapper, r
     this.additionalLocalisations = 0
     this.effects = []
     this.badEffects = []
+    log(result)
     this.nbEffects = result.all.filter(function(roll) { return roll.value === 5 || roll.value === 6 }).length
-    this.qualityEffects = {
-        'AVE' : function(d) { d.effects.push("Aveuglant") },
-        'CRU': function(d, lvl) { d.success += d.nbEffects * lvl },
+    this.qualityActions = {
+        'AVE' : function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.effects.push("Aveuglant") 
+            }
+        },
+        'CRU': function(this: DamageDiceResultWrapper, lvl) { this.success += this.nbEffects * lvl },
         'BOU': function() {},
         'JET': function() {},
-        'CAV': function(d, lvl) { if(d.rawResult.allTags.includes('mounted')) { d.success += d.nbEffects * lvl } },
-        'PERF': function(d, lvl) { d.effects.push("-" + (d.nbEffects * lvl) + " à l'encaissement") },
-        'CON': function(d, lvl) { d.selfDamage += d.nbEffects * lvl },
-        'ETEN': function(d, lvl) { d.additionalLocalisations += d.nbEffects * lvl },
-        'ETOU': function(d) { d.effects.push("Désorienté (" + d.nbEffects + ")") },
-        'CACH': function() {},
-        'ETRE': function(d) { d.effects.push("Immobilisé") },
-        'FRA': function(d) { d.badEffects.push("L'arme perd " + d.nbEffects + " dégât(s)")},
-        'IMP': function(d) { d.success -= d.nbEffects},
-        'INC': function(d, lvl) { d.effects.push("Enflammé: " + lvl + "d6/" + d.nbEffects)},
-        'INT': function(d) { d.intense = true },
-        'LET': function(d) { 
-            if(d.rawResult.allTags.includes('exploitation')) {
-                 d.success += d.nbEffects * 2 
-                 d.intense = true
+        'CAV': function(this: DamageDiceResultWrapper, lvl) { 
+            if(this.rawResult.allTags.includes('mounted')) { 
+                this.success += this.nbEffects * lvl 
+            } 
+        },
+        'PERF': function(this: DamageDiceResultWrapper, lvl) {
+            if(this.nbEffects > 0) {
+                this.effects.push("-" + (this.nbEffects * lvl) + " à l'encaissement")
+            } 
+         },
+        'CON': function(this: DamageDiceResultWrapper, lvl) { this.selfDamage += this.nbEffects * lvl },
+        'ETEN': function(this: DamageDiceResultWrapper, lvl) { this.additionalLocalisations += this.nbEffects * lvl },
+        'ETOU': function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.effects.push("Désorienté (" + this.nbEffects + ")") 
             }
         },
-        'MAT': function(d) { d.effects.push("Mise à terre (" + d.nbEffects + ")") },
-        'NLET': function(d) { if(
-            !d.rawResult.allTags.includes('q_EMP') &&
-            !d.rawResult.allTags.includes('q_AVE') &&
-            !d.rawResult.allTags.includes('q_MAT') &&
-            d.rawResult.allTags.filter(function(e) { return /q_INC_*/g.test(e) })[0] === undefined &&
-            !d.rawResult.allTags.includes('q_ETRE') &&
-            !d.rawResult.allTags.includes("q_ETOU")) {
-                d.effects.push("Sonné")
+        'CACH': function() {},
+        'ETRE': function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.effects.push("Immobilisé") 
             }
-            d.nonLetal = true
+        },
+        'FRA': function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.badEffects.push("L'arme perd " + this.nbEffects + " dégât(s)")
+            }
+        },
+        'IMP': function(this: DamageDiceResultWrapper) { this.success -= this.nbEffects},
+        'INC': function(this: DamageDiceResultWrapper, lvl) { 
+            if(this.nbEffects > 0) {
+                this.effects.push("Enflammé: " + lvl + "d6/" + this.nbEffects)
+            }
+        },
+        'INT': function(this: DamageDiceResultWrapper) { this.intense = true },
+        'LET': function(this: DamageDiceResultWrapper) { 
+            if(this.rawResult.allTags.includes('exploitation')) {
+                this.success += this.nbEffects * 2 
+                this.intense = true
+            }
+        },
+        'MAT': function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.effects.push("Mise à terre (" + this.nbEffects + ")") 
+            }
+        },
+        'NLET': function(this: DamageDiceResultWrapper) { if(
+            this.nbEffects > 0 &&
+            !this.rawResult.allTags.includes('q_EMP') &&
+            !this.rawResult.allTags.includes('q_AVE') &&
+            !this.rawResult.allTags.includes('q_MAT') &&
+            this.rawResult.allTags.filter(function(e) { return /^q_INC/g.test(e) })[0] === undefined &&
+            !this.rawResult.allTags.includes('q_ETRE') &&
+            !this.rawResult.allTags.includes("q_ETOU")) {
+                this.effects.push("Sonné")
+            }
+            this.nonLetal = true
         },
         'PAR': function() {},
-        'PERS': function(d, lvl) { d.effects.push("Persistant: " + lvl + "d6/" + d.nbEffects) },
-        'RED': function(d, lvl) { d.mentalDamage += d.nbEffects * lvl },
+        'PERS': function(this: DamageDiceResultWrapper, lvl) { 
+            if(this.nbEffects) {
+                this.effects.push("Persistant: " + lvl + "d6/" + this.nbEffects) 
+            }
+        },
+        'RED': function(this: DamageDiceResultWrapper, lvl) { this.mentalDamage += this.nbEffects * lvl },
         'SUB': function() {},
         'VOL': function() {},
-        'ZON': function(d) { d.effects.push(d.nbEffects + " cibles supplémentaires") }
-    }
-
-    // Constructor
-    const that = this
-    result.allTags.filter(function(e) { return /q_*/g.test(e) }).forEach(function(tag) {
-        const qualityId = tag.split('_')[1]
-        const lvl = tag.split('_')[2]
-        if(that.nbEffects > 0 || qualityId === 'INT') {
-            if(lvl === undefined) {
-                that.qualityEffects[qualityId as WeaponQualityId](that, letterToInt(lvl))
-            } else {
-                that.qualityEffects[qualityId as WeaponQualityId](that, 1)
+        'ZON': function(this: DamageDiceResultWrapper) { 
+            if(this.nbEffects > 0) {
+                this.effects.push(this.nbEffects + " cibles supplémentaires") 
             }
         }
-    })
-
-    this.getEffects = function() {
-        const effects = this.effects
-        if(this.intense) {
-            effects.push("+1 dommage")
-        }
-        if(this.mentalDamage > 0) {
-            effects.push(this.mentalDamage + " dégâts mentaux")
-        }
-        if(this.additionalLocalisations > 0) {
-            effects.push(this.additionalLocalisations + " localisations supplémentaires")
-        }
-        return effects
+    }
+    this.tagActions = {
+        's': function() {},
+        'd': function() {},
+        'v': function() {},
+        't': function(this: DamageDiceResultWrapper, lvl, label) {
+            if(Tables.get("talents").get(label as TalentId).skill === this.skillId) {
+                this.talentActions[label as TalentId].call(this, lvl)
+            }
+        },
+        'q': function(this: DamageDiceResultWrapper, lvl, label) { this.qualityActions[label as WeaponQualityId].call(this, lvl) },
+        'ns': function() {},
+        'dm': function() {}
     }
     
-    this.getBadEffects = function() {
-        const badEffects = this.badEffects
-        if(this.selfDamage > 0) {
-            badEffects.push(this.selfDamage + " dégât(s) subis")
-        }
-        return badEffects
+    // Constructor
+    for(var idx in result.allTags) {
+        const tagInfos = result.allTags[idx].split('_')
+        this.tagActions[tagInfos[0] as TagCategory].call(this, charToInt(tagInfos[2]), tagInfos[1])
     }
-} as any as { new (result: DiceResult): DamageDiceResultWrapper }
 
-DamageDiceResultWrapper.prototype = Object.create(DiceResultWrapper.prototype);
+    if(this.intense) {
+        this.effects.push("+1 dommage")
+    }
+    
+    if(this.mentalDamage > 0) {
+        this.effects.push("+" + this.mentalDamage + " dégâts mentaux")
+    }
 
+    if(this.additionalLocalisations > 0) {
+        this.effects.push(this.additionalLocalisations + " localisations supplémentaires")
+    }
+    
+    if(this.selfDamage > 0) {
+        this.badEffects.push(this.selfDamage + " dégât(s) subis")
+    }
 
-// export class DamageDiceResultWrapper extends DiceResultWrapper {
+    return this
 
-//     private selfDamage: number = 0
-//     private mentalDamage: number = 0
-//     private intense: boolean = false
-//     private nonletal: boolean = true
-//     private additionalLocalisations: number = 0
-//     private effects: string[] = []
-//     private badEffects: string[] = []
-//     private nbEffects: number = 0
-//     private qualityEffect: Record<WeaponQualityId, (damageMetadata: DamageDiceResultWrapper, level: number) => void> = {
-//         'AVE' : function(d) { d.effects.push("Aveuglant") },
-//         'CRU': function(d, lvl) { d.success += d.nbEffects * lvl },
-//         'BOU': function() {},
-//         'JET': function() {},
-//         'CAV': function(d, lvl) { if(d.rawResult.allTags.includes('mounted')) { d.success += d.nbEffects * lvl } },
-//         'PERF': function(d, lvl) { d.effects.push("-" + (d.nbEffects * lvl) + " à l'encaissement") },
-//         'CON': function(d, lvl) { d.selfDamage += d.nbEffects * lvl },
-//         'ETEN': function(d, lvl) { d.additionalLocalisations += d.nbEffects * lvl },
-//         'ETOU': function(d) { d.effects.push("Désorienté (" + d.nbEffects + ")") },
-//         'CACH': function() {},
-//         'ETRE': function(d) { d.effects.push("Immobilisé") },
-//         'FRA': function(d) { d.badEffects.push("L'arme perd " + d.nbEffects + " dégât(s)")},
-//         'IMP': function(d) { d.success -= d.nbEffects},
-//         'INC': function(d, lvl) { d.effects.push("Enflammé: " + lvl + "d6/" + d.nbEffects)},
-//         'INT': function(d) { d.intense = true },
-//         'LET': function(d) { 
-//             if(d.rawResult.allTags.includes('exploitation')) {
-//                  d.success += d.nbEffects * 2 
-//                  d.intense = true
-//             }
-//         },
-//         'MAT': function(d) { d.effects.push("Mise à terre (" + d.nbEffects + ")") },
-//         'NLET': function(d) { if(
-//             !d.rawResult.allTags.includes('q_EMP') &&
-//             !d.rawResult.allTags.includes('q_AVE') &&
-//             !d.rawResult.allTags.includes('q_MAT') &&
-//             d.rawResult.allTags.filter(function(e) { return /q_INC_*/g.test(e) })[0] === undefined &&
-//             !d.rawResult.allTags.includes('q_ETRE') &&
-//             !d.rawResult.allTags.includes("q_ETOU")) {
-//                 d.effects.push("Sonné")
-//             }
-//             d.nonletal = true
-//         },
-//         'PAR': function() {},
-//         'PERS': function(d, lvl) { d.effects.push("Persistant: " + lvl + "d6/" + d.nbEffects) },
-//         'RED': function(d, lvl) { d.mentalDamage += d.nbEffects * lvl },
-//         'SUB': function() {},
-//         'VOL': function() {},
-//         'ZON': function(d) { d.effects.push(d.nbEffects + " cibles supplémentaires") }
-//     }
-//     private readonly talentDamageEffects: Record<TalentId, (result: DamageDiceResultWrapper, lvl: number) => void> = {
-//         'AGI': function(r) { r.rerollable = true },
-//         'AGIFEL' : function(r) { r.pertinentTalents.push('AGIFEL') },
-//         'MESS' : function(r) { r.pertinentTalents.push('MESS') }
-//     }
-
-//     constructor(result: DiceResult) {
-//         super(result)
-//         this.nbEffects = result.all.filter(function(roll) { return roll.value === 5 || roll.value === 6 }).length
-//         const that = this
-//         result.allTags.filter(function(e) { return /q_*/g.test(e) }).forEach(function(tag) {
-//             const qualityId = tag.split('_')[1]
-//             const lvl = tag.split('_')[2]
-//             if(that.nbEffects > 0 || qualityId === 'INT') {
-//                 if(lvl === undefined) {
-//                     that.qualityEffect[qualityId as WeaponQualityId](that, letterToInt(lvl))
-//                 } else {
-//                     that.qualityEffect[qualityId as WeaponQualityId](that, 1)
-//                 }
-//             }
-//         })
-//     }
-
-//     isNonLetal() { return this.nonletal }
-
-//     getBadEffects() {
-//         return this.badEffects
-//     }
-
-//     getEffects() {
-//         return this.effects
-//     }
-// }
+} as any as { (result: DiceResult): DamageDiceResultWrapper }
