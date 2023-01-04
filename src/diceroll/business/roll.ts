@@ -28,7 +28,6 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     if(sheet.get(getExpInputName(skill.id)).value() + concValue === 0) {
         tags.push("ns")
     }
-    log("ajout du tag noskill")
     // Prendre l'intensité définie sur la feuille (par défaut 2)
     let intensity = (sheet.getData().roll_intensity !== undefined) ? parseInt(sheet.getData().roll_intensity) : 2
     const voleeTag = tags.filter(function(e) { return /v_*/g.test(e) })[0]
@@ -45,7 +44,6 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     roll.expression(diceExpression)
         .visibility("visible")
         .title(skill.name)
-    log("roll")
     roll.roll();
 }
 

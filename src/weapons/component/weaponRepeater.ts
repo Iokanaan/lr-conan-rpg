@@ -8,9 +8,7 @@ export interface WeaponRepeater extends Component<Record<string, WeaponData>> {
 }
 
 export const WeaponRepeater = function (this: WeaponRepeater) {
-    log("build")
     this.setListeners = function() {
-        log("Setup listernes")
         // Gestion de l'initialisation du mode édition
         setupRepeater(this, function(entry) {
             WeaponEditEntry
@@ -18,7 +16,6 @@ export const WeaponRepeater = function (this: WeaponRepeater) {
                 .setDefaultData()
                 .setListeners()
         })
-        log("base listener steup")
         // Gestion des stocks de recharges
         this.on('click', 'charge_moins', chargeMoinsHandler(this))
         this.on('click', 'charge_plus', chargePlusHandler(this))
@@ -31,7 +28,6 @@ export const WeaponRepeater = function (this: WeaponRepeater) {
 
         // Gestion du jet d'armes de corps à corps
         this.on('click', 'throw', throwHandler(this))
-        log("repeater donee")
         return this
     }
     return this

@@ -20,8 +20,6 @@ export const processQualitiesLabel = function(data: WeaponData) {
     return data.qualities_Choice.map(function(selectedQuality) {
         const quality = Tables.get("weapon_qualities").get<Quality>(selectedQuality)
         if(quality.type === "Variable") {
-            log(getLabel(quality.id))
-            log(data)
             if(data[getLabel(quality.id)] as number === undefined) {
                 data[getLabel(quality.id)] = 1
             }

@@ -12,7 +12,6 @@ init = function(sheet: Sheet<any>) {
         WeaponRepeater
             .call(sheet.get('weapons'))
             .setListeners();
-            log("init talents")
         TalentRepeater
             .call(sheet.get('talents'))
             .setListeners()

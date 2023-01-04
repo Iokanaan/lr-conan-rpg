@@ -10,7 +10,6 @@ export interface DamageDiceResultPopup extends DiceResultPopup<DamageDiceResultW
 export const DamageDiceResultPopup = function(this: DamageDiceResultPopup) {
         // Super
         DiceResultPopup.call(this as any as DiceResultPopup) 
-        log("super done")
         this.render = function(result: DamageDiceResultWrapper) {
             this.renderTotalLabel(result)
 

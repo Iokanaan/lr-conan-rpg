@@ -7,7 +7,6 @@ export interface TalentRepeater extends Component<Record<string, TalentData>> {
 
 export const TalentRepeater = function (this: TalentRepeater) {
     this.setListeners = function() {
-        log("set talents listeners")
         setupRepeater(this, function(entry: Component<TalentData>) {
             TalentEditEntry
                 .call(entry)

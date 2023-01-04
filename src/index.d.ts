@@ -19,6 +19,11 @@ declare global {
         static roll: (sheet: Sheet<any>, d: Dice, s: string) => void
 
     }
+
+    declare var getReferences: (sheet: Sheet<any>) => Record<string, string | number>
+    declare var init: (sheet: Sheet<any>) => void
+    declare var drop: (from: Sheet<any>, to: Sheet<any>) => void
+    declare var initRoll: (result: DiceResult, callback: DiceResultCallback) => void
     
     declare const log: (s: any) => void;
 

@@ -20,8 +20,6 @@ export interface DamageDiceResultWrapper extends DiceResultWrapper {
 export const DamageDiceResultWrapper = function(this: DamageDiceResultWrapper, result: DiceResult) {
     // Super
     DiceResultWrapper.call(this, result) 
-    log(this.success)
-    log("super donne")
     // Default values
     this.selfDamage = 0
     this.mentalDamage = 0
@@ -30,7 +28,6 @@ export const DamageDiceResultWrapper = function(this: DamageDiceResultWrapper, r
     this.additionalLocalisations = 0
     this.effects = []
     this.badEffects = []
-    log(result)
     this.nbEffects = result.all.filter(function(roll) { return roll.value === 5 || roll.value === 6 }).length
     this.qualityActions = {
         'AVE' : function(this: DamageDiceResultWrapper) { 

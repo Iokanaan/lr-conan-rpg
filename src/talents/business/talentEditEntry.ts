@@ -57,10 +57,7 @@ const isTalentAvailable = function(sheetData: CharData, talent: Talent, currentT
 export const getAvailableChoices = function(sheetData: CharData): Partial<Record<TalentId, string>> {
     const availableChoices: Partial<Record<TalentId, string>> = {}
     const currentTalents: TalentId[] = []
-    log(sheetData.talents)
     each(sheetData.talents, function(entryData: TalentData) {
-        log('entry')
-        log(entryData)
         currentTalents.push(entryData.talents_Choice)
     })
     Tables.get('talents').each(function(talent) {

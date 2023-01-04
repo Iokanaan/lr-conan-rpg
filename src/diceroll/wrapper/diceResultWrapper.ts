@@ -35,7 +35,6 @@ export const DiceResultWrapper = function (this: DiceResultWrapper, result: Dice
     this.nbAttackDice = 0
     this.pertinentTalents = []
     this.rawResult = result
-    log("rawResult")
     this.talentActions = {
         'AGI': function(this: DiceResultWrapper) { this.rerollable = true },
         'AGIFEL': function(this: DiceResultWrapper) { this.pertinentTalents.push('AGIFEL') },
@@ -61,16 +60,13 @@ export const DiceResultWrapper = function (this: DiceResultWrapper, result: Dice
         },
         'dm': function() {}
     }
-    log("default values set")
     // Constructor
     for(var idx in this.rawResult.all) {
-        log(this.rawResult.all[idx])
         if(this.rawResult.all[idx].value === 20) {
             this.fumbles++
         }
     }
     for(var idx in result.allTags) {
-        log(result.allTags[idx])
         let tagInfo = result.allTags[idx].split("_")
         this.tagActions[tagInfo[0] as TagCategory].call(this, charToInt(tagInfo[2]), tagInfo[1])
     }

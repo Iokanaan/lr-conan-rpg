@@ -10,10 +10,8 @@ export interface TalentEditEntry extends Component<TalentData> {
 export const TalentEditEntry = function (this: TalentEditEntry) {
 
     this.setDefaultData = function() {
-        log("set data")
         const availableChoices = getAvailableChoices((this.sheet() as Sheet<CharData>).getData());
         (this.find("talents_Choice") as ChoiceComponent).setChoices(availableChoices)
-        log(availableChoices)
         const that = this
         each(availableChoices, function(_, key) {
             that.find('talents_Choice').value(key)
@@ -21,11 +19,8 @@ export const TalentEditEntry = function (this: TalentEditEntry) {
             return false
         })
         const talentSkill = Tables.get("talents").get(this.value().talents_Choice).skill
-        log(talentSkill)
         switch (talentSkill) {
             case "ORIG":
-                log(this)
-                log(this.find("talent_skill"))
                 this.find("talent_skill").text("Origine")
                 break
             case "CAST":
@@ -34,8 +29,6 @@ export const TalentEditEntry = function (this: TalentEditEntry) {
             default:
                 this.find("talent_skill").text(Tables.get("skills").get(talentSkill).name)
         }
-
-        log(availableChoices);
 
         return this
     }

@@ -11,9 +11,7 @@ export interface DiceResultPopup<T = DiceResultWrapper> extends Sheet<unknown> {
 
 export const DiceResultPopup = function(this: DiceResultPopup) {
     this.render = function(result) {
-        log("render total")
         this.renderTotalLabel(result)
-        log(result)
         if(result.fumbles > 0) {
             this.renderFumbles(result)
         }
@@ -46,9 +44,7 @@ export const DiceResultPopup = function(this: DiceResultPopup) {
     
     this.renderDamageButton = function(result) {
         const damageRoll = new RollBuilder(this)
-        log("settup click")
         this.get("damage_Btn").on("click", function() { 
-            log("damageButton Clicked")
             // Expression pour convertir le d6 au format CONAN (1=1,2=2,3=0,4=0,5=1+effet,6=1+effet)
             let damageExpression = result.nbAttackDice + "d6 <{2:2,3:0,4:0,5:1,6:1} 7"
             result.rawResult.allTags.push("dm")
