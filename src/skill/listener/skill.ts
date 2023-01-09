@@ -4,6 +4,7 @@ import { AttributeId, AttributeInputName, SkillConcInputName, SkillExpInputName,
 export const setSkillListeners = function(sheet: Sheet<CharData>) {
     Tables.get('skills').each(function(skill) {
         sheet.get(skill.id + '_btn').on('click', function() {
+            log('click')
             rollSkill(sheet, skill, [])
         })
     })

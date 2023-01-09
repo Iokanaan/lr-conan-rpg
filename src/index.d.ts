@@ -73,6 +73,7 @@ declare global {
 
     interface Sheet<T> {
         id(): string
+        getSheetId(): number
         get(elem: 'weapons'): Component<Record<string, WeaponData>>,
         get(elem: 'talents'): Component<Record<string, TalentData>>,
         get(elem: AttributeInputName | SkillConcInputName | SkillExpInputName): Component<number>

@@ -9,6 +9,24 @@ export const intToChar = function(n: number) {
     return String.fromCharCode(96 + n)
 }
 
+export const intToWord = function(n: number) {
+    const chars = n.toString().split('')
+    let word = ''
+    for(var i in chars) {
+        word += intToChar(parseInt(chars[i]))
+    }
+    return word
+}
+
+export const wordToInt = function(str: string) {
+    const chars = str.split('')
+    let res = ''
+    for(var i in chars) {
+        res += (chars[i].charCodeAt(0) - 96).toString()
+    }
+    return parseInt(res)
+}
+
 // Variable globale de gestion des entries sur le repeater des talents
 let entryStates: Record<string, RepeaterState> = {}
 
