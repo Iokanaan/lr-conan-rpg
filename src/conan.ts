@@ -4,12 +4,11 @@ import { WeaponRepeater } from './weapons/component/weaponRepeater'
 import { TalentRepeater } from './talents/component/talentRepeater'
 import { WeaponCraftSheet } from './weapons/component/weaponCraftSheet'
 import { globalSheets } from './globals'
+import { InventoryRepeater } from './inventory/component/inventoryRepeater'
 
 /*
 TODO
 Remplir les attitude
--- Bugfix les talents
--- Voir pourquoi les attaques ne se lancent pas
 -- terminer les armures
 Gestion des bonus de dégats
 Gestion de la vigueur/résultation
@@ -28,10 +27,7 @@ création de personnage
 // @ts-ignore
 init = function(sheet: Sheet<any>) {
     if (sheet.id() === "main") {
-        log(globalSheets)
         globalSheets[sheet.getSheetId()] = sheet
-        log(globalSheets)
-        log(globalSheets[sheet.getSheetId()])
         setSkillListeners(sheet)
         WeaponRepeater
             .call(sheet.get('weapons'))
@@ -39,8 +35,12 @@ init = function(sheet: Sheet<any>) {
         TalentRepeater
             .call(sheet.get('talents'))
             .setListeners()
+        InventoryRepeater
+            .call(sheet.get('objects'))
+            .setListeners()
         //initArmorRepeater(sheet)
     }
+    
     if (sheet.id() === "weapon_craft") {
         WeaponCraftSheet
             .call(sheet)
