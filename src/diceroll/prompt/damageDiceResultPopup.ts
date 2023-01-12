@@ -3,13 +3,14 @@ import { DamageDiceResultWrapper } from "../wrapper/damageDiceResultWrapper"
 import { DiceResultPopup } from "./diceResultPopup"
 
 export interface DamageDiceResultPopup extends DiceResultPopup<DamageDiceResultWrapper> {
+    sourceSheet: Sheet<CharData>
     renderEffects: (result: DamageDiceResultWrapper) => void
     renderTotalLabel: (result: DamageDiceResultWrapper) => void
 }
 
-export const DamageDiceResultPopup = function(this: DamageDiceResultPopup) {
+export const DamageDiceResultPopup = function(this: DamageDiceResultPopup, sourceSheet: Sheet<CharData>) {
         // Super
-        DiceResultPopup.call(this as any as DiceResultPopup) 
+        DiceResultPopup.call(this as any as DiceResultPopup, sourceSheet) 
         this.render = function(result: DamageDiceResultWrapper) {
             this.renderTotalLabel(result)
 
@@ -58,4 +59,4 @@ export const DamageDiceResultPopup = function(this: DamageDiceResultPopup) {
         }
 
         return this 
-} as any as { (): DamageDiceResultPopup }
+} as any as { (sourceSheet: Sheet<CharData>): DamageDiceResultPopup }

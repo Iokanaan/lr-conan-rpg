@@ -10,9 +10,6 @@ import { DiceResultWrapper } from "../wrapper/diceResultWrapper"
 
 
 export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: string[]) {
-    log('roll init')
-    log(sheet.getSheetId())
-    log(intToWord(sheet.getSheetId()))
     tags.push('sheet_' + intToWord(sheet.getSheetId()))
     each(sheet.get("talents").value(), function(talent) {
         tags.push("t_" + talent.talents_Choice)
@@ -49,7 +46,6 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
     roll.expression(diceExpression)
         .visibility("visible")
         .title(skill.name)
-        log('rolling')
     roll.roll();
 }
 
@@ -63,17 +59,17 @@ export const rollSkill = function(sheet: Sheet<CharData>, skill: Skill, tags: st
  */
 export const rollResultHandler = function(result: DiceResult, callback: DiceResultCallback) {
     callback('diceResult', function(sheet) {
-        log('cb')
         const sheetId = wordToInt(result.allTags.filter(function(e) { return /^sheet_/g.test(e) })[0].split('_')[1])
-        log(sheetId)
-        log(globalSheets[sheetId].getData())
         if(result.allTags.includes('dm')) {
             DamageDiceResultPopup
-                .call(sheet)
+                .call(sheet, globalSheets[sheetId])
                 .render(DamageDiceResultWrapper.call({}, result));
         } else {
+            log("rendering")
+            log(sheetId)
+            log(globalSheets[sheetId])
             DiceResultPopup
-                .call(sheet)
+                .call(sheet, globalSheets[sheetId])
                 .render(DiceResultWrapper.call({}, result));
         }
     })

@@ -30,6 +30,7 @@ init = function(sheet: Sheet<any>) {
     if (sheet.id() === "main") {
         log(globalSheets)
         globalSheets[sheet.getSheetId()] = sheet
+        log(globalSheets)
         log(globalSheets[sheet.getSheetId()])
         setSkillListeners(sheet)
         WeaponRepeater

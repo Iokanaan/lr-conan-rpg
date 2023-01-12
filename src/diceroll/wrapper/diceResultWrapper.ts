@@ -12,7 +12,7 @@ import { charToInt } from "../../util/utils"
  * ns = no skill
  * dm = damage roll
  */
-export type TagCategory = 's' | 'd' | 'v' | 't' | 'q' | 'ns' | 'dm'
+export type TagCategory = 's' | 'd' | 'v' | 't' | 'q' | 'ns' | 'dm' | 'sheet'
 
 export interface DiceResultWrapper {
     success: number
@@ -58,10 +58,11 @@ export const DiceResultWrapper = function (this: DiceResultWrapper, result: Dice
                 }
             }
         },
-        'dm': function() {}
+        'dm': function() {},
+        'sheet': function() {}
     }
     // Constructor
-    for(var idx in this.rawResult.all) {
+    for(var idx in result.all) {
         if(this.rawResult.all[idx].value === 20) {
             this.fumbles++
         }

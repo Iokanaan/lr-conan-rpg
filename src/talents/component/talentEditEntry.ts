@@ -13,11 +13,13 @@ export const TalentEditEntry = function (this: TalentEditEntry) {
         const availableChoices = getAvailableChoices((this.sheet() as Sheet<CharData>).getData());
         (this.find("talents_Choice") as ChoiceComponent).setChoices(availableChoices)
         const that = this
-        each(availableChoices, function(_, key) {
+        log("entry val")
+        log(that.find('talents_Choice').value())
+       /* each(availableChoices, function(_, key) {
             that.find('talents_Choice').value(key)
             that.find('talent_desc').value(Tables.get('talents').get(key).description)
             return false
-        })
+        })*/
         const talentSkill = Tables.get("talents").get(this.value().talents_Choice).skill
         switch (talentSkill) {
             case "ORIG":

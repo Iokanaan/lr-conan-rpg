@@ -1,6 +1,7 @@
 import { DiceResultWrapper } from "../wrapper/diceResultWrapper"
 
 export interface DiceResultPopup<T = DiceResultWrapper> extends Sheet<unknown> {
+    sourceSheet: Sheet<CharData>
     render: (result: T) => void
     renderTotalLabel: (result: T) => void
     renderFumbles: (result: T) => void
@@ -9,7 +10,8 @@ export interface DiceResultPopup<T = DiceResultWrapper> extends Sheet<unknown> {
     renderInfos: (result: T) => void
 }
 
-export const DiceResultPopup = function(this: DiceResultPopup) {
+export const DiceResultPopup = function(this: DiceResultPopup, sourceSheet: Sheet<CharData>) {
+    this.sourceSheet = sourceSheet
     this.render = function(result) {
         this.renderTotalLabel(result)
         if(result.fumbles > 0) {
@@ -41,13 +43,12 @@ export const DiceResultPopup = function(this: DiceResultPopup) {
        this.get('fumble').text(result.fumbles + " complication(s)")
        this.get('fumble').show()
     }
-    
     this.renderDamageButton = function(result) {
-        const damageRoll = new RollBuilder(this)
+        const damageRoll = new RollBuilder(sourceSheet)
         this.get("damage_Btn").on("click", function() { 
             // Expression pour convertir le d6 au format CONAN (1=1,2=2,3=0,4=0,5=1+effet,6=1+effet)
             let damageExpression = result.nbAttackDice + "d6 <{2:2,3:0,4:0,5:1,6:1} 7"
-            result.rawResult.allTags.push("dm")
+            result.rawResult.allTags.push('dm')
             // Ajout des qualités
             damageExpression += "[" + result.rawResult.allTags.join() + "]"
             damageRoll.expression(damageExpression)
@@ -68,7 +69,7 @@ export const DiceResultPopup = function(this: DiceResultPopup) {
         this.get("reroll_Btn").on("click", function() {
             // Construction de l'expression
             const rerollDice = Dice.create(result.rawResult.expression.replace(/[0-9]+d/i, that.get("reroll").value().length + "d")).tag("reroll")
-            Dice.roll(that, rerollDice, result.rawResult.title)
+            Dice.roll(sourceSheet, rerollDice, result.rawResult.title)
         })
         this.get("reroll_Btn").show()
     }
@@ -83,4 +84,4 @@ export const DiceResultPopup = function(this: DiceResultPopup) {
 
     return this
 
-} as any as { (): DiceResultPopup}
+} as any as { (sourceSheet: Sheet<CharData>): DiceResultPopup}

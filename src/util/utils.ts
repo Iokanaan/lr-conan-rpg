@@ -2,11 +2,11 @@ export const charToInt = function(letter: string) {
     if(letter === undefined) {
         return 0
     }
-    return letter.charCodeAt(0) - 96
+    return letter.charCodeAt(0) - 97
 }
 
 export const intToChar = function(n: number) {
-    return String.fromCharCode(96 + n)
+    return String.fromCharCode(97 + n)
 }
 
 export const intToWord = function(n: number) {
@@ -22,7 +22,7 @@ export const wordToInt = function(str: string) {
     const chars = str.split('')
     let res = ''
     for(var i in chars) {
-        res += (chars[i].charCodeAt(0) - 96).toString()
+        res += (chars[i].charCodeAt(0) - 97).toString()
     }
     return parseInt(res)
 }

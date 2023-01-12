@@ -122,7 +122,8 @@ export const DamageDiceResultWrapper = function(this: DamageDiceResultWrapper, r
         },
         'q': function(this: DamageDiceResultWrapper, lvl, label) { this.qualityActions[label as WeaponQualityId].call(this, lvl) },
         'ns': function() {},
-        'dm': function() {}
+        'dm': function() {},
+        'sheet': function() {}
     }
     
     // Constructor
