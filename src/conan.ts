@@ -5,6 +5,8 @@ import { TalentRepeater } from './talents/component/talentRepeater'
 import { WeaponCraftSheet } from './weapons/component/weaponCraftSheet'
 import { globalSheets } from './globals'
 import { InventoryRepeater } from './inventory/component/inventoryRepeater'
+import { getCombatBonus } from './util/utils'
+import { setCombatBonus } from './weapons/component/combatMetadata'
 
 /*
 TODO
@@ -32,6 +34,7 @@ init = function(sheet: Sheet<any>) {
         WeaponRepeater
             .call(sheet.get('weapons'))
             .setListeners();
+        setCombatBonus(sheet)
         TalentRepeater
             .call(sheet.get('talents'))
             .setListeners()
@@ -58,3 +61,17 @@ drop = function(from: Sheet<any>, to: Sheet<any>) {
 
 // @ts-ignore
 initRoll = rollResultHandler
+
+getReferences = function(sheet): Record<string, string | number> {
+    log(sheet.id())
+    if(sheet.id() === "main") {
+        return {
+            "meleeBonus": getCombatBonus(sheet.get("CON_Inpt").value()),
+            "rangedBonus": getCombatBonus(sheet.get("PERC_Inpt").value()),
+            "mentalBonus": getCombatBonus(sheet.get("PERS_Inpt").value())  
+        }
+    } else {
+        return {}
+    }
+}
+

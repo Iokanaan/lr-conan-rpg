@@ -27,6 +27,16 @@ export const wordToInt = function(str: string) {
     return parseInt(res)
 }
 
+export const getCombatBonus = function(val: number) {
+    log("calculationg " + val)
+    if(val >= 16) { return 5 }
+    if(val >= 14) { return 4 }
+    if(val >= 12) { return 3 }
+    if(val >= 10) { return 2 }
+    if(val === 9) { return 1 }
+    return 0
+}
+
 // Variable globale de gestion des entries sur le repeater des talents
 let entryStates: Record<string, RepeaterState> = {}
 
