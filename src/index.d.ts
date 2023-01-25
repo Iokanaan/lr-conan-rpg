@@ -80,7 +80,7 @@ declare global {
         get(s:string): Component;
         setData(data: Partial<T>)
         getData(): T;
-        prompt(title: string, sheetId: string, callback: (result: componentData) => void, callbackInit: (sheet: Sheet) => void)
+        prompt(title: string, sheetId: string, callback: (result: componentData) => void, callbackInit?: (sheet: Sheet) => void)
     }
 
     type Visibility = 'visible'

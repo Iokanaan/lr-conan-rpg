@@ -7,6 +7,7 @@ import { globalSheets } from './globals'
 import { InventoryRepeater } from './inventory/component/inventoryRepeater'
 import { getCombatBonus } from './util/utils'
 import { setCombatBonus } from './weapons/component/combatMetadata'
+import { initThreats, setThreats } from './threat/component/listeners'
 
 /*
 TODO
@@ -41,6 +42,7 @@ init = function(sheet: Sheet<any>) {
         InventoryRepeater
             .call(sheet.get('objects'))
             .setListeners()
+        setThreats(sheet)
         //initArmorRepeater(sheet)
     }
     
