@@ -12,7 +12,7 @@ import { charToInt } from "../../util/utils"
  * ns = no skill
  * dm = damage roll
  */
-export type TagCategory = 's' | 'd' | 'v' | 't' | 'q' | 'ns' | 'dm' | 'sheet'
+export type TagCategory = 's' | 'd' | 't' | 'q' | 'ns' | 'dm' | 'sheet'
 
 export interface DiceResultWrapper {
     success: number
@@ -44,7 +44,6 @@ export const DiceResultWrapper = function (this: DiceResultWrapper, result: Dice
     this.tagActions = {
         's': function() {},
         'd': function(this: DiceResultWrapper, lvl) { this.nbAttackDice  += lvl },
-        'v': function(this: DiceResultWrapper, lvl) { this.nbAttackDice  += lvl },
         't': function(this: DiceResultWrapper, lvl, label) {
             if(Tables.get("talents").get(label as TalentId).skill === this.skillId) {
                 this.talentActions[label as TalentId].call(this, lvl)

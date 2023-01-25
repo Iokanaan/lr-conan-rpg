@@ -61,15 +61,19 @@ export const attackHandler = function(weaponRepeater: WeaponRepeater): (elem: Co
         // Initialiser les metadonnees de l'attaque
         const tags = processQualitiesTag(data)
         data.damage_Input = (data.damage_Input !== undefined) ? data.damage_Input : 0
-        tags.push("d__" + intToChar(data.damage_Input))
         if(data.type_Choice === "melee") {
+            const damage = data.damage_Input + weaponRepeater.sheet().get('melee_bonus').value()
+            tags.push("d__" + intToChar(damage))
             // Jet simple sur la base de la melée pour les armes de corps à corps
             rollSkill(weaponRepeater.sheet() as Sheet<CharData>, Tables.get("skills").get("MEL"), tags)
         } else {
+
+            const damage = data.damage_Input + weaponRepeater.sheet().get('ranged_bonus').value()
+            
             // Gestion des charges pour les armes à distance
-            if(data.charges_Input === undefined) { data.charges_Input = 0 }
             const volee = data.qualities_Choice.includes("VOL")
             const charges = data.charges_Input > 0
+
             // ERREUR : Pas de charge
             if(!volee && !charges) {
                 weaponRepeater.sheet().prompt('Erreur', 'GenericPrompt',function(){}, function(promptSheet: Sheet<YesNoData>) {
@@ -81,18 +85,20 @@ export const attackHandler = function(weaponRepeater: WeaponRepeater): (elem: Co
             if(!volee && charges) {
                 entry.find('charges_Input').value(data.charges_Input - 1)
                 entry.find("charges_Display_Label").value(entry.find("charges_Input").value())
+                tags.push("d__" + intToChar(damage))
                 rollSkill(weaponRepeater.sheet() as Sheet<CharData>, Tables.get("skills").get("DIST"), tags)
             }
     
             // On lance une attaque normale
             if(volee && !charges) {
+                tags.push("d__" + intToChar(damage))
                 rollSkill(weaponRepeater.sheet() as Sheet<CharData>, Tables.get("skills").get("DIST"), tags)
             }
     
             // On lance avec bonus, on décrémente les charges
             if(volee && charges) {
                 weaponRepeater.sheet().prompt('Consommer charge ?', 'ChargePrompt', function(result) {
-                    tags.push("v_" + result.yesno)
+                    tags.push("d__" + intToChar(damage + parseInt(result.yesno)))
                     entry.find('charges_Input').value(data.charges_Input - parseInt(result.yesno))
                     entry.find("charges_Display_Label").value(entry.find("charges_Input").value())
                     rollSkill(weaponRepeater.sheet() as Sheet<CharData>, Tables.get("skills").get("DIST"), tags)

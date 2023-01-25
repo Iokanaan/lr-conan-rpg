@@ -7,17 +7,15 @@ import { globalSheets } from './globals'
 import { InventoryRepeater } from './inventory/component/inventoryRepeater'
 import { getCombatBonus } from './util/utils'
 import { setCombatBonus } from './weapons/component/combatMetadata'
-import { initThreats, setThreats } from './threat/component/listeners'
+import { setThreats } from './threat/component/listeners'
 
 /*
 TODO
-Remplir les attitude
 -- terminer les armures
-Gestion des bonus de dégats
+Gestion des mains, lignée perdue
+Gestion héroisme / fatalité
 Gestion de la vigueur/résultation
 Gérer les bonus / états
-ajouter la couleur
-Inventaire Simple
 Gérer la bio 
 Gérér les talents
 Sorts
